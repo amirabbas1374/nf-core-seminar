@@ -4,20 +4,6 @@ nf_core_version: 3.3.2
 
 lint:
   files_unchanged:
-    - .github/CONTRIBUTING.md
-    - assets/sendmail_template.txt
-    - LICENSE
-    - .github/CONTRIBUTING.md
-    - .prettierignore
-    - .github/ISSUE_TEMPLATE/bug_report.yml
-    - .github/ISSUE_TEMPLATE/config.yml
-    - .github/ISSUE_TEMPLATE/feature_request.yml
-    - .github/PULL_REQUEST_TEMPLATE.md
-    - .github/workflows/branch.yml
-    - .github/workflows/linting_comment.yml
-    - .github/workflows/linting.yml
-    - .github/CONTRIBUTING.md
-    - .github/.dockstore.yml
     - .prettierignore
     - .prettierignore
     - .prettierignore
@@ -30,6 +16,20 @@ lint:
     - .github/PULL_REQUEST_TEMPLATE.md
     - assets/email_template.txt
     - docs/README.md
+    - .github/CONTRIBUTING.md
+    - LICENSE
+    - .prettierignore
+    - .github/CONTRIBUTING.md
+    - assets/sendmail_template.txt
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/ISSUE_TEMPLATE/config.yml
+    - .github/ISSUE_TEMPLATE/feature_request.yml
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - .github/workflows/branch.yml
+    - .github/workflows/linting_comment.yml
+    - .github/workflows/linting.yml
+    - .github/CONTRIBUTING.md
+    - .github/.dockstore.yml
   nextflow_config:
     - manifest.name
     - manifest.homePage
@@ -40,28 +40,20 @@ lint:
   nf_test_content: false
   multiqc_config: false
   files_exist:
-    - conf/igenomes.config
-    - conf/igenomes_ignored.config
-    - CHANGELOG.md
-    - assets/multiqc_config.yml
-    - LICENSE
-    - .prettierignore
-    - .prettierrc.yml
-    - .github/ISSUE_TEMPLATE/bug_report.yml
-    - .github/ISSUE_TEMPLATE/feature_request.yml
-    - .github/PULL_REQUEST_TEMPLATE.md
-    - .github/CONTRIBUTING.md
-    - .github/.dockstore.yml
+    - .github/workflows/nf-test.yml
+    - .github/actions/get-shards/action.yml
+    - .github/actions/nf-test/action.yml
+    - nf-test.config
+    - tests/default.nf.test
+    - assets/email_template.html
+    - assets/sendmail_template.txt
+    - assets/email_template.txt
     - .github/workflows/branch.yml
     - .github/workflows/nf-test.yml
     - .github/actions/get-shards/action.yml
     - .github/actions/nf-test/action.yml
     - .github/workflows/linting_comment.yml
     - .github/workflows/linting.yml
-    - assets/email_template.html
-    - assets/sendmail_template.txt
-    - assets/email_template.txt
-    - CITATIONS.md
     - CODE_OF_CONDUCT.md
     - assets/nf-core-seminar_logo_light.png
     - docs/images/nf-core-seminar_logo_light.png
@@ -69,11 +61,19 @@ lint:
     - .github/ISSUE_TEMPLATE/config.yml
     - .github/workflows/awstest.yml
     - .github/workflows/awsfulltest.yml
-    - .github/workflows/nf-test.yml
-    - .github/actions/get-shards/action.yml
-    - .github/actions/nf-test/action.yml
-    - nf-test.config
-    - tests/default.nf.test
+    - LICENSE
+    - CITATIONS.md
+    - assets/multiqc_config.yml
+    - .prettierignore
+    - .prettierrc.yml
+    - CHANGELOG.md
+    - conf/igenomes.config
+    - conf/igenomes_ignored.config
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/ISSUE_TEMPLATE/feature_request.yml
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - .github/CONTRIBUTING.md
+    - .github/.dockstore.yml
   readme:
     - nextflow_badge
     - nextflow_badge
@@ -81,10 +81,10 @@ lint:
 
 template:
   org: nf-core
-  name: seminar
+  name: Seminar
   description: rna
-  author: Amirabbas
-  version: '1.0'
+  author: amirabbas
+  version: '0.1'
   force: true
   outdir: .
   skip_features:

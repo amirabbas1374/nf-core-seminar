@@ -51,7 +51,7 @@ nextflow run nf-core/seminar \
 
 ## Credits
 
-nf-core/seminar was originally written by Amirabbas.
+nf-core/seminar was originally written by amirabbas.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
