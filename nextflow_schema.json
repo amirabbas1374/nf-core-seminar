@@ -79,6 +79,41 @@
                 }
             }
         },
+{
+  "title": "Reference genome options",
+  "type": "object",
+  "fa_icon": "fas fa-dna",
+  "description": "Reference genome files used in the RNA-seq pipeline.",
+  "properties": {
+
+    "fasta": {
+      "type": "string",
+      "description": "Path to the reference genome FASTA file."
+    },
+
+    "gtf": {
+      "type": "string",
+      "description": "Path to the gene annotation GTF file."
+    },
+
+    "transcriptome": {
+      "type": "string",
+      "description": "Path to the transcriptome FASTA file."
+    },
+
+    "star_index": {
+      "type": "string",
+      "description": "Path to the STAR genome index directory."
+    },
+
+    "salmon_index": {
+      "type": "string",
+      "description": "Path to the Salmon transcript index directory."
+    }
+
+  }
+},
+
         "generic_options": {
             "title": "Generic options",
             "type": "object",
@@ -139,6 +174,9 @@
         },
         {
             "$ref": "#/$defs/generic_options"
+        },
+        {
+            "$ref": "#/$defs/reference_genome_options"
         }
     ]
 }
