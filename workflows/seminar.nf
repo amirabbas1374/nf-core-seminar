@@ -17,64 +17,62 @@ include { MULTIQC }          from '../modules/nf-core/multiqc/main'
     RUN MAIN WORKFLOW
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
 
 workflow SEMINAR {
 
     take:
-    ch_samplesheet // channel: samplesheet read in from --input
-    main:
+    ch_samplesheet
 
-    ch_versions = Channel.empty()
-    ch_gtf = Channel.value(file(params.gtf))
-    ch_star_index = Channel.value(file(params.star_index))
-    ch_salmon_index = Channel.value(file(params.salmon_index))
-    ch_transcriptome = Channel.value(file(params.transcriptome))
+    main:
+    ch_gtf_tuple      = Channel.value([[id: 'gtf'], file(params.gtf)])
+    ch_gtf_path       = Channel.value(file(params.gtf))
+    ch_star_index     = Channel.value([[id: 'star_index'], file(params.star_index)])
+    ch_salmon_index   = Channel.value(file(params.salmon_index))
+    ch_transcriptome  = Channel.value(file(params.transcriptome))
+    ch_alignment_mode = Channel.value(false)
+    ch_lib_type       = Channel.value(false)
+
     ch_multiqc_files = Channel.empty()
 
-
-     
     FASTQC(ch_samplesheet)
-    ch_versions = ch_versions.mix(FASTQC.out.versions)
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip)
-    
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.map { it[1] })
+
     TRIMGALORE(ch_samplesheet)
-    ch_versions = ch_versions.mix(TRIMGALORE.out.versions)
-    ch_multiqc_files = ch_multiqc_files.mix(TRIMGALORE.out.log)    
-    
-    STAR_ALIGN(TRIMGALORE.out.reads,ch_star_index,ch_gtf,false)
-    ch_versions = ch_versions.mix(STAR_ALIGN.out.versions)
-    ch_multiqc_files = ch_multiqc_files.mix(STAR_ALIGN.out.log)    
+    ch_multiqc_files = ch_multiqc_files.mix(TRIMGALORE.out.zip.map { it[1] })
+    ch_multiqc_files = ch_multiqc_files.mix(TRIMGALORE.out.log.map { it[1] })
 
-    QUALIMAP_RNASEQ(STAR_ALIGN.out.bam, ch_gtf)
-    ch_versions = ch_versions.mix(QUALIMAP_RNASEQ.out.versions)
-    ch_multiqc_files = ch_multiqc_files.mix(QUALIMAP_RNASEQ.out.report)
+    STAR_ALIGN(TRIMGALORE.out.reads, ch_star_index, ch_gtf_tuple, false)
+    ch_multiqc_files = ch_multiqc_files.mix(STAR_ALIGN.out.log_final.map { it[1] })
 
-    DUPRADAR(STAR_ALIGN.out.bam, ch_gtf)
-    ch_versions = ch_versions.mix(DUPRADAR.out.versions)
-    ch_multiqc_files = ch_multiqc_files.mix(DRUPRADAR.out.plot)
+    QUALIMAP_RNASEQ(STAR_ALIGN.out.bam, ch_gtf_tuple)
+    ch_multiqc_files = ch_multiqc_files.mix(QUALIMAP_RNASEQ.out.results.map { it[1] })
 
-    SALMON_QUANT(TRIMGALORE.out.reads, ch_salmon_index, ch_gtf, ch_transcriptome, false, false)
-    ch_versions = ch_versions.mix(SALMON_QUANT.out.versions)
-    ch_multiqc_files = ch_multiqc_files.mix(SALMON_QUANT.out.log)
+    DUPRADAR(STAR_ALIGN.out.bam, ch_gtf_tuple)
+    ch_multiqc_files = ch_multiqc_files.mix(DUPRADAR.out.multiqc.map { it[1] })
 
-    MULTIQC(ch_multiqc_files)
-    ch_versions = ch_versions.mix(MULTIQC.out.versions) 
+    SALMON_QUANT(TRIMGALORE.out.reads, ch_salmon_index, ch_gtf_path, ch_transcriptome, ch_alignment_mode, ch_lib_type)
+    ch_multiqc_files = ch_multiqc_files.mix(SALMON_QUANT.out.results.map { it[1] })
 
-    //
-    // Collate and save software versions
-    //
-    softwareVersionsToYAML(ch_versions)
-        .collectFile(
-            storeDir: "${params.outdir}/pipeline_info",
-            name:  'seminar_software_'  + 'versions.yml',
-            sort: true,
-            newLine: true
-        ).set { ch_collated_versions }
+    ch_multiqc_files = ch_multiqc_files.collect()
+    ch_multiqc_config       = Channel.value([])
+    ch_extra_multiqc_config = Channel.value([])
+    ch_multiqc_logo         = Channel.value([])
+    ch_replace_names        = Channel.value([])
+    ch_sample_names         = Channel.value([])
 
-
-    emit:
-    versions       = ch_versions                 // channel: [ path(versions.yml) ]
-
+    MULTIQC(
+        ch_multiqc_files,
+        ch_multiqc_config,
+        ch_extra_multiqc_config,
+        ch_multiqc_logo,
+        ch_replace_names,
+        ch_sample_names
+    )
 }
 
 /*

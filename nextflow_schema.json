@@ -79,7 +79,7 @@
                 }
             }
         },
-{
+  "reference_genome_options": {
   "title": "Reference genome options",
   "type": "object",
   "fa_icon": "fas fa-dna",
@@ -110,7 +110,6 @@
       "type": "string",
       "description": "Path to the Salmon transcript index directory."
     }
-
   }
 },
 
